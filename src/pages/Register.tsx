@@ -49,10 +49,10 @@ export default function Register() {
       console.log('res:', response)
     } catch (e: any) {
       console.error('Register user error: ', e.response.data.message)
-      const { message, key } = e.response.data
+      const { message } = e.response.data
       switch (e.response?.status) {
         case 400:
-          toast.error(`${key} feild error: ${message}`)
+          toast.error(message)
           break
         case 409:
           toast.error(message)

@@ -1,12 +1,60 @@
 import { Link } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Mail, Lock } from 'lucide-react'
 import igIcon from '@/assets/instagram.svg'
 import fbIcon from '@/assets/facebook.svg'
 import lineIcon from '@/assets/line.svg'
+import { toast } from 'sonner'
+import { login } from '@/api/auth'
 
 export default function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  // 防止連續點擊
+  const [isLoading, setIsLoading] = useState(false)
+
+  const navigate = useNavigate()
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      if (!email || !password) {
+        toast.error('You need to fill in every field')
+        return
+      }
+      const response = await login({
+        email,
+        password,
+      })
+      if (response.token) {
+        localStorage.setItem('token', response.token)
+      }
+      toast.success('Login Successful!')
+      setTimeout(() => navigate('/home'), 1000)
+      console.log('res:', response)
+    } catch (e: any) {
+      console.error('Login error: ', e.response.data.message)
+      const { message } = e.response.data
+      switch (e.response?.status) {
+        case 400:
+          toast.error(message)
+          break
+        case 401:
+          toast.error(message)
+          break
+
+        case 500:
+          toast.error(message)
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-start p-6 pt-16">
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-orange-300 via-amber-100 to-white opacity-60" />
@@ -21,13 +69,14 @@ export default function Login() {
       </div>
 
       <div className="z-10 flex w-full max-w-md flex-col gap-3">
-        <form>
+        <form onSubmit={submit}>
           <div className="flex flex-col gap-6">
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-600" />
               <Input
-                id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter Your Email"
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
                 required
@@ -37,8 +86,9 @@ export default function Login() {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-600" />
                 <Input
-                  id="password"
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
                   placeholder="Enter Your Password"
                   required
@@ -54,14 +104,14 @@ export default function Login() {
               </div>
             </div>
           </div>
+          <Button
+            type="submit"
+            className="ml-8 mt-4 h-12 w-full max-w-[300px] rounded-md border-2 border-amber-900/50 bg-amber-300 font-bold text-amber-950 transition-all hover:scale-105 hover:bg-amber-300 md:ml-16"
+            disabled={!email || !password}
+          >
+            {isLoading ? 'Login...' : 'Login'}
+          </Button>
         </form>
-
-        <Button
-          type="submit"
-          className="mx-auto mt-4 h-12 w-full max-w-[300px] rounded-md border-2 border-amber-900/50 bg-amber-300 font-bold text-amber-950 transition-all hover:scale-105 hover:bg-amber-300"
-        >
-          Log In
-        </Button>
 
         <div className="flex items-center justify-center gap-2 text-sm text-slate-600">
           <p>Don't have an account?</p>
