@@ -3,7 +3,7 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Mail, Lock } from 'lucide-react'
+import { Mail, Lock, Loader2 } from 'lucide-react'
 import igIcon from '@/assets/instagram.svg'
 import fbIcon from '@/assets/facebook.svg'
 import lineIcon from '@/assets/line.svg'
@@ -11,21 +11,19 @@ import { toast } from 'sonner'
 import { login } from '@/api/auth'
 
 export default function Login() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  const canSubmit = email && password
 
   // 防止連續點擊
   const [isLoading, setIsLoading] = useState(false)
 
-  const navigate = useNavigate()
-  async function submit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsLoading(true)
     try {
-      if (!email || !password) {
-        toast.error('You need to fill in every field')
-        return
-      }
       const response = await login({
         email,
         password,
@@ -33,22 +31,35 @@ export default function Login() {
       if (response.token) {
         localStorage.setItem('token', response.token)
       }
-      toast.success('Login Successful!')
-      setTimeout(() => navigate('/home'), 1000)
-      console.log('res:', response)
-    } catch (e: any) {
-      console.error('Login error: ', e.response.data.message)
-      const { message } = e.response.data
-      switch (e.response?.status) {
-        case 400:
-          toast.error(message)
-          break
-        case 401:
-          toast.error(message)
-          break
+      toast.success('登入成功')
+      console.log('Login success:', response)
 
-        case 500:
-          toast.error(message)
+      setTimeout(() => navigate('/home'), 1000)
+    } catch (e: any) {
+      const status = e.response?.status
+      const errorData = e.response?.data
+
+      if (!errorData) {
+        console.error('Login error: Network Error')
+        toast.error('伺服器無法連線，請稍後再試。')
+        return
+      }
+      if (status === 400 && errorData?.key) {
+        const errorMessages: Record<string, string> = {
+          email: '電子郵件格式錯誤',
+          password: '密碼格式錯誤',
+        }
+        toast.error(errorMessages[errorData.key] || '輸入欄位有誤')
+      } else if (status === 401 && errorData?.key) {
+        const errorMessages: Record<string, string> = {
+          email: '此信箱尚為驗證',
+          password: '帳號或密碼錯誤',
+        }
+        toast.error(errorMessages[errorData.key] || '登入失敗')
+      } else if (status >= 500) {
+        toast.error('伺服器維護中，請稍後再試')
+      } else {
+        toast.error(errorData?.message || '登入失敗，請檢查網路連線')
       }
     } finally {
       setIsLoading(false)
@@ -69,7 +80,7 @@ export default function Login() {
       </div>
 
       <div className="z-10 flex w-full max-w-md flex-col gap-3">
-        <form onSubmit={submit}>
+        <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-6">
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-600" />
@@ -77,7 +88,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter Your Email"
+                placeholder="電子郵件"
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
                 required
               />
@@ -90,7 +101,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
-                  placeholder="Enter Your Password"
+                  placeholder="密碼"
                   required
                 />
               </div>
@@ -99,7 +110,7 @@ export default function Login() {
                   href="#"
                   className="ml-auto inline-block text-xs text-amber-700 underline-offset-4 hover:text-amber-600 hover:underline"
                 >
-                  Forget Password?
+                  忘記密碼?
                 </a>
               </div>
             </div>
@@ -107,19 +118,26 @@ export default function Login() {
           <Button
             type="submit"
             className="ml-8 mt-4 h-12 w-full max-w-[300px] rounded-md border-2 border-amber-900/50 bg-amber-300 font-bold text-amber-950 transition-all hover:scale-105 hover:bg-amber-300 md:ml-16"
-            disabled={!email || !password}
+            disabled={!canSubmit}
           >
-            {isLoading ? 'Login...' : 'Login'}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              '登入'
+            )}
           </Button>
         </form>
 
         <div className="flex items-center justify-center gap-2 text-sm text-slate-600">
-          <p>Don't have an account?</p>
+          <p>尚未有帳號?</p>
           <Link
             to="/register"
             className="font-bold text-amber-700 underline-offset-4 hover:text-amber-600 hover:underline"
           >
-            Sign up
+            註冊
           </Link>
         </div>
         <div className="mt-20 flex items-center justify-center gap-10">

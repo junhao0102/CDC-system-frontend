@@ -11,54 +11,75 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from 'sonner'
-import { Mail, Lock, User, IdCard } from 'lucide-react'
+import { Mail, Lock, User, IdCard, Loader2 } from 'lucide-react'
 import { registerUser, type UserRole } from '@/api/user'
 
 export default function Register() {
-  const [username, setUserName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [role, setRole] = useState<UserRole | ''>('')
+  const navigate = useNavigate()
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: '' as UserRole | '',
+  })
+
+  const { username, email, password, confirmPassword, role } = formData
 
   // 防止連續點擊
   const [isLoading, setIsLoading] = useState(false)
 
-  const isSamePassword = password === confirmPassword && password !== ''
-  const isNotEmpty = confirmPassword !== ''
+  const isPasswordMatch = password === confirmPassword && password !== ''
+  const canSubmit =
+    username && email && password && role && isPasswordMatch && !isLoading
 
-  const navigate = useNavigate()
-  async function submit(e: FormEvent<HTMLFormElement>) {
+  function handleChange(key: keyof typeof formData, value: string) {
+    setFormData((prev) => ({ ...prev, [key]: value }))
+  }
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (!isPasswordMatch) {
+      toast.error('兩次密碼輸入不一致')
+      return
+    }
     setIsLoading(true)
     try {
-      if (!username || !email || !password || !role) {
-        toast.error('You need to fill in every field')
-        return
-      }
       const response = await registerUser({
         username,
         email: email.trim(),
         password,
-        role,
+        role: role as UserRole,
       })
-      toast.success(
-        `Registration successful! Please check your inbox to verify your email`,
-      )
+
+      toast.success('註冊成功！請至信箱收取驗證信')
+      console.log('Registration success:', response)
+
       setTimeout(() => navigate('/login'), 2000)
-      console.log('res:', response)
     } catch (e: any) {
-      console.error('Register user error: ', e.response.data.message)
-      const { message } = e.response.data
-      switch (e.response?.status) {
-        case 400:
-          toast.error(message)
-          break
-        case 409:
-          toast.error(message)
-          break
-        case 500:
-          toast.error(message)
+      const status = e.response?.status
+      const errorData = e.response?.data
+
+      if (!errorData) {
+        console.error('Login error: Network Error')
+        toast.error('伺服器無法連線，請稍後再試。')
+        return
+      }
+
+      if (status === 400 && errorData?.key) {
+        const errorMessages: Record<string, string> = {
+          email: '電子郵件格式錯誤',
+          password: '密碼格式錯誤',
+          username: '使用者名稱格式錯誤',
+          role: '角色權限錯誤',
+        }
+        toast.error(errorMessages[errorData.key] || '輸入欄位有誤')
+      } else if (status === 409) {
+        toast.error('此電子信箱已被註冊')
+      } else if (status >= 500) {
+        toast.error('伺服器維護中，請稍後再試')
+      } else {
+        toast.error(errorData?.message || '註冊失敗，請檢查網路連線')
       }
     } finally {
       setIsLoading(false)
@@ -70,20 +91,21 @@ export default function Register() {
       <div className="absolute inset-0 z-0 bg-gradient-to-t from-orange-300 via-amber-100 to-white opacity-60" />
       <div className="z-10 my-16 flex items-center justify-center gap-3 pr-2 drop-shadow-sm md:my-24">
         <h1 className="text-center text-3xl font-black tracking-tighter text-amber-700">
-          Sign Up
+          註冊
         </h1>
       </div>
       <div className="z-10 flex w-full max-w-md flex-col gap-3">
-        <form onSubmit={submit} noValidate>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col gap-6">
             <div className="relative">
               <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-600" />
               <Input
                 type="text"
                 value={username}
-                onChange={(e) => setUserName(e.target.value)}
-                placeholder="Enter Your Name"
+                onChange={(e) => handleChange('username', e.target.value)}
+                placeholder="使用者姓名"
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
+                required
               />
             </div>
             <div className="relative">
@@ -91,9 +113,10 @@ export default function Register() {
               <Input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email Address"
+                onChange={(e) => handleChange('email', e.target.value)}
+                placeholder="電子郵件"
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
+                required
               />
             </div>
 
@@ -102,9 +125,10 @@ export default function Register() {
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => handleChange('password', e.target.value)}
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
-                placeholder="Password"
+                placeholder="密碼"
+                required
               />
             </div>
 
@@ -113,13 +137,16 @@ export default function Register() {
               <Input
                 type="password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) =>
+                  handleChange('confirmPassword', e.target.value)
+                }
                 className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500"
-                placeholder="Confirm Password"
+                placeholder="確認密碼"
+                required
               />
-              {isNotEmpty && (
+              {confirmPassword && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                  {isSamePassword ? '✅' : '❌'}
+                  {isPasswordMatch ? '✅' : '❌'}
                 </span>
               )}
             </div>
@@ -128,17 +155,16 @@ export default function Register() {
               <IdCard className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-amber-600" />
               <Select
                 value={role}
-                onValueChange={(value: UserRole) => setRole(value)}
+                onValueChange={(value: UserRole) => handleChange('role', value)}
+                required
               >
                 <SelectTrigger className="h-12 border-2 border-stone-400 pl-10 transition-all focus-visible:border-amber-500 focus-visible:ring-amber-500">
-                  <SelectValue placeholder="Select If You Are The Member In CDC" />
+                  <SelectValue placeholder="是否為崇德社社員" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="cdc_member">⭕ CDC Member</SelectItem>
-                    <SelectItem value="non_cdc_member">
-                      ❌ non CDC Member
-                    </SelectItem>
+                    <SelectItem value="cdc_member">⭕</SelectItem>
+                    <SelectItem value="non_cdc_member">❌</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -147,11 +173,16 @@ export default function Register() {
           <Button
             type="submit"
             className="ml-8 mt-4 h-12 w-full max-w-[300px] rounded-md border-2 border-amber-900/50 bg-amber-300 font-bold text-amber-950 transition-all hover:scale-105 hover:bg-amber-300 md:ml-16"
-            disabled={
-              !isSamePassword || !username || !email || !password || !role
-            }
+            disabled={!canSubmit}
           >
-            {isLoading ? 'Submitting...' : 'Submit'}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              '創建使用者'
+            )}
           </Button>
         </form>
       </div>
