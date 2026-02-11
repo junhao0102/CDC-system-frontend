@@ -68,8 +68,15 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-start p-6 pt-16">
-      <div className="absolute inset-0 z-0 bg-gradient-to-t from-orange-300 via-amber-100 to-white opacity-60" />
-
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-50 to-orange-100">
+        <div
+          className="absolute inset-0 opacity-70"
+          style={{
+            backgroundImage: `radial-gradient(circle, rgba(217,119,6,0.3) 1px, transparent 1px)`,
+            backgroundSize: '24px 24px',
+          }}
+        />
+      </div>
       <div className="z-10 my-16 flex items-center justify-center gap-3 pr-2 drop-shadow-sm md:my-24">
         <img src="/icon.png" alt="icon" className="h-12 w-12 object-contain" />
         <div className="text-center">
