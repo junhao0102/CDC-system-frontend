@@ -5,16 +5,7 @@ export interface loginSchema {
   password: string
 }
 
-interface LoginResponseSchema {
-  token: string
-  user: {
-    id: string
-    username: string
-    role: string
-  }
-}
-
-function login(user: loginSchema): Promise<LoginResponseSchema> {
+function login(user: loginSchema) {
   return api.post('/auth/login', user)
 }
 

@@ -28,9 +28,7 @@ export default function Login() {
         email,
         password,
       })
-      if (response.token) {
-        localStorage.setItem('token', response.token)
-      }
+
       toast.success('登入成功')
       console.log('Login success:', response)
 
@@ -130,7 +128,7 @@ export default function Login() {
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
+                登入中...
               </>
             ) : (
               '登入'
