@@ -25,7 +25,7 @@ import {
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
-import { addActivity } from '@/api/activity'
+import { addActivity, type Activity } from '@/api/activity'
 
 function DatePicker({ name }: { name: string }) {
   const [date, setDate] = useState<Date>()
@@ -61,9 +61,14 @@ function DatePicker({ name }: { name: string }) {
   )
 }
 
-export default function AddActivity() {
+export default function AddActivity({
+  setActivities,
+}: {
+  setActivities: Function
+}) {
   // 防止連續點擊
   const [isLoading, setIsLoading] = useState(false)
+  const [open, setOpen] = useState(false) // Modal control
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -79,7 +84,7 @@ export default function AddActivity() {
       toast.error('請填寫所有必填欄位')
       return
     }
-    if (data.end_time < data.start_time) {
+    if (data.end_time <= data.start_time) {
       toast.error('結束時間必須大於開始時間')
       return
     }
@@ -95,6 +100,8 @@ export default function AddActivity() {
       })
       toast.success('新增成功')
       console.log('Login success:', response)
+      setOpen(false)
+      setActivities((prev: Activity[]) => [...prev, response.activity])
     } catch (e: any) {
       const status = e.response?.status
       const errorData = e.response?.data
@@ -125,7 +132,7 @@ export default function AddActivity() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
           <SquarePlus className="mr-2 h-4 w-4" />
@@ -179,18 +186,16 @@ export default function AddActivity() {
                 取消
               </Button>
             </DialogClose>
-            <DialogClose asChild>
-              <Button type="submit">
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    新增中...
-                  </>
-                ) : (
-                  '新增'
-                )}
-              </Button>
-            </DialogClose>
+            <Button type="submit">
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  新增中...
+                </>
+              ) : (
+                '新增'
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
