@@ -34,7 +34,7 @@ export default function Login() {
       toast.success('登入成功')
       console.log('Login success:', response)
 
-      setTimeout(() => navigate('/home'), 1000)
+      setTimeout(() => navigate('/signin'), 1000)
     } catch (e: any) {
       const status = e.response?.status
       const errorData = e.response?.data
