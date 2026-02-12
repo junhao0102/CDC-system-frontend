@@ -24,7 +24,8 @@ export default function CleanQrScanner({
           if (scannedRef.current) return
           scannedRef.current = true
 
-          onScan(text)
+          const uuid = text.split('/').pop() || ''
+          onScan(uuid)
 
           await qrCode.stop()
           qrCode.clear()

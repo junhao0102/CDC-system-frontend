@@ -11,6 +11,10 @@ interface addActivityResponseSchema {
   activity: Activity
 }
 
+interface signInResponseSchema {
+  activity: Activity
+}
+
 export interface Activity {
   id: number
   activity_name: string
@@ -36,4 +40,8 @@ function getActivities(): Promise<GetActivitiesResponseSchema> {
   return api.get('/activity')
 }
 
-export { addActivity, getActivities }
+function signIn(qr_code: string): Promise<signInResponseSchema> {
+  return api.post(`/activity/sign_in/${qr_code}`)
+}
+
+export { addActivity, getActivities, signIn }
