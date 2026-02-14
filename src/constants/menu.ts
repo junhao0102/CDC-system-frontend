@@ -1,4 +1,4 @@
-import { Activity, Camera, Trophy } from 'lucide-react'
+import { Activity, Camera, Trophy, LibraryBig } from 'lucide-react'
 
 const menus = [
   {
@@ -15,6 +15,11 @@ const menus = [
     name: '排行榜',
     url: '/rank',
     icon: Trophy,
+  },
+  {
+    name: '個人紀錄',
+    url: '/record',
+    icon: LibraryBig,
   },
 ]
 

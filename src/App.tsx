@@ -4,6 +4,7 @@ import Register from '@/pages/register/Register'
 import SignIn from '@/pages/sign_in/SignIn'
 import Activity from '@/pages/activity/Activity'
 import Rank from '@/pages/rank/Rank'
+import Record from '@/pages/record/Record'
 import Layout from '@/layout'
 import { Toaster } from '@/components/ui/sonner'
 
@@ -35,6 +36,14 @@ export default function App() {
           element={
             <Layout>
               <Rank />
+            </Layout>
+          }
+        />
+        <Route
+          path="/record"
+          element={
+            <Layout>
+              <Record />
             </Layout>
           }
         />
