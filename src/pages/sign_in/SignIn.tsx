@@ -52,10 +52,7 @@ export default function SignIn() {
 
   return (
     <div className="flex flex-col items-center justify-center space-y-4 p-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-slate-800">簽到</h1>
-        <p className="text-slate-500">請將 QR Code 對準下方掃描框</p>
-      </div>
+      <p className="text-center text-slate-500">請將 QR Code 對準下方掃描框</p>
 
       <Html5QrcodePlugin onScan={onScan} />
 

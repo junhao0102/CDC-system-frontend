@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useSidebar } from '@/components/ui/sidebar'
 import { useState, useEffect } from 'react'
 import {
   Sidebar,
@@ -16,9 +17,18 @@ import { me, type User, logout } from '@/api/auth.ts'
 import { toast } from 'sonner'
 
 export function AppSidebar() {
+  const { setOpenMobile, isMobile } = useSidebar()
+
   const navigate = useNavigate()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+
+  // 如果是手機版，點擊後自動關閉
+  function handleCloseMobile() {
+    if (isMobile) {
+      setOpenMobile(false)
+    }
+  }
 
   useEffect(() => {
     async function getMe() {
@@ -72,7 +82,11 @@ export function AppSidebar() {
             {menus.map((menu) => (
               <SidebarMenuItem key={menu.name} className="px-2">
                 <SidebarMenuButton size="lg" asChild>
-                  <Link to={menu.url} className="flex items-center gap-3">
+                  <Link
+                    to={menu.url}
+                    onClick={handleCloseMobile}
+                    className="flex items-center gap-3"
+                  >
                     <div className="flex h-8 w-8 items-center justify-center">
                       <menu.icon className="h-5 w-5 text-slate-500" />
                     </div>
