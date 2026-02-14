@@ -56,16 +56,15 @@ export default function Record() {
           </TableRow>
         </TableBody>
       ) : myRecords.length === 0 ? (
-        <TableRow>
-          <TableCell
-            colSpan={2}
-            className="h-32 text-center text-slate-500"
-          >
-            <div className="flex flex-col items-center justify-center gap-2">
-              <p>目前沒有任何參加紀錄</p>
-            </div>
-          </TableCell>
-        </TableRow>
+        <TableBody>
+          <TableRow>
+            <TableCell colSpan={2} className="h-32 text-center text-slate-500">
+              <div className="flex flex-col items-center justify-center gap-2">
+                <p>目前沒有任何參加紀錄</p>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
       ) : (
         <TableBody>
           {myRecords.map((record, index) => {
