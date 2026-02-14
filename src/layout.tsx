@@ -16,7 +16,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <header className="flex h-14 w-full items-center border-b px-4">
           <div className="flex items-center gap-2">
             <CustomTrigger />
-            {currentMenu && <currentMenu.icon className="h-5 w-5 text-slate-500"/>}
+            {currentMenu && (
+              <currentMenu.icon className="h-5 w-5 text-slate-500" />
+            )}
             <span>{currentMenu ? currentMenu.name : '系統'}</span>
           </div>
         </header>
