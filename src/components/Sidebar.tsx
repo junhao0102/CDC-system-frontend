@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import {
   Sidebar,
   SidebarContent,
@@ -11,12 +12,37 @@ import {
 } from '@/components/ui/sidebar'
 import { CircleUserRound, LogOut } from 'lucide-react'
 import menus from '@/constants/menu'
+import { me, type User } from '@/api/auth.ts'
+import { toast } from 'sonner'
 
 export function AppSidebar() {
-  const footer = {
-    name: 'Jim',
-    email: 'example@example.com',
-  }
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function getMe() {
+      try {
+        const data = await me()
+        setUser(data.user)
+      } catch (e: any) {
+        const status = e.response?.status
+        const errorData = e.response?.data
+
+        if (!e.response) {
+          toast.error('伺服器無法連線，請檢查網路狀態')
+          return
+        }
+        if (status >= 500) {
+          toast.error('伺服器維護中，請稍後再試')
+          return
+        }
+        toast.error(errorData?.message || '獲取個人資訊失敗')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    getMe()
+  }, [])
 
   return (
     <Sidebar>
@@ -67,9 +93,11 @@ export function AppSidebar() {
               </div>
               <div className="ml-1 flex flex-col text-left text-sm leading-tight">
                 <span className="font-semibold text-slate-700">
-                  {footer.name}
+                  {isLoading ? '讀取中' : user?.username}
                 </span>
-                <span className="text-xs text-slate-500">{footer.email}</span>
+                <span className="text-xs text-slate-500">
+                  {isLoading ? '讀取中' : user?.email}
+                </span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
