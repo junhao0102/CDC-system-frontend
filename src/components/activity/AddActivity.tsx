@@ -158,35 +158,41 @@ export default function AddActivity({
               <DatePicker name="date" />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Field>
-                <Label htmlFor="activity_start_time">開始時間</Label>
+            <div className="grid grid-cols-2 sm:gap-4">
+              <Field className="flex flex-col gap-1">
+                <Label htmlFor="activity_start_time ">開始時間</Label>
                 <Input
                   id="activity_start_time"
                   name="start_time"
                   type="time"
+                  className="w-full max-w-[160px]"
                   required
                 />
               </Field>
-              <Field>
+              <Field className="flex flex-col gap-1">
                 <Label htmlFor="activity_end_time">結束時間</Label>
                 <Input
                   id="activity_end_time"
                   name="end_time"
                   type="time"
+                  className="w-full max-w-[160px]"
                   required
                 />
               </Field>
             </div>
           </FieldGroup>
 
-          <DialogFooter className="gap-2 sm:gap-0">
+          <DialogFooter className="flex flex-row justify-end gap-2 sm:gap-0">
             <DialogClose asChild>
-              <Button type="button" variant="outline">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full max-w-[120px]"
+              >
                 取消
               </Button>
             </DialogClose>
-            <Button type="submit">
+            <Button type="submit" className="w-full max-w-[120px]">
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
