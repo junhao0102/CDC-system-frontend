@@ -171,8 +171,8 @@ export default function Register() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="cdc_member">⭕</SelectItem>
-                    <SelectItem value="non_cdc_member">❌</SelectItem>
+                    <SelectItem value="CDC_MEMBER">⭕</SelectItem>
+                    <SelectItem value="NON_CDC_MEMBER">❌</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
