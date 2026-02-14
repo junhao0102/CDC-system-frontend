@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import {
   Sidebar,
@@ -12,10 +12,11 @@ import {
 } from '@/components/ui/sidebar'
 import { CircleUserRound, LogOut } from 'lucide-react'
 import menus from '@/constants/menu'
-import { me, type User } from '@/api/auth.ts'
+import { me, type User, logout } from '@/api/auth.ts'
 import { toast } from 'sonner'
 
 export function AppSidebar() {
+  const navigate = useNavigate()
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -43,6 +44,16 @@ export function AppSidebar() {
     }
     getMe()
   }, [])
+
+  async function handleLogout() {
+    try {
+      await logout()
+      toast.success('登出成功')
+      navigate('/login')
+    } catch (e: any) {
+      toast.error('登出失敗,請稍後再試')
+    }
+  }
 
   return (
     <Sidebar>
@@ -79,11 +90,13 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="default" asChild>
-              <Link to="/login" className="flex items-center gap-2">
-                <LogOut />
-                <span className="text-sm font-medium text-slate-600">登出</span>
-              </Link>
+            <SidebarMenuButton
+              size="default"
+              onClick={handleLogout}
+              className="flex cursor-pointer items-center gap-2"
+            >
+              <LogOut className="h-4 w-4 text-slate-500" />
+              <span className="text-sm font-medium text-slate-600">登出</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem className="border-t border-slate-300 pt-2">
@@ -96,7 +109,7 @@ export function AppSidebar() {
                   {isLoading ? '讀取中' : user?.username}
                 </span>
                 <span className="text-xs text-slate-500">
-                  {isLoading ? '讀取中' : user?.email}
+                  {isLoading ? '...' : user?.email}
                 </span>
               </div>
             </SidebarMenuButton>

@@ -20,4 +20,8 @@ function me(): Promise<meSchema> {
   return api.get('/auth/me')
 }
 
-export { login, me }
+function logout() {
+  return api.post('/auth/logout')
+}
+
+export { login, me, logout }
