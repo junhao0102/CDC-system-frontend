@@ -8,17 +8,22 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { getMyRecords, type Record } from '@/api/record'
+import Pagination from '@/components/Pagination'
 import { toast } from 'sonner'
 
 export default function Record() {
   const [isLoading, setIsLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [myRecords, setMyRecords] = useState<Record[]>([])
   useEffect(() => {
     async function fetchMyRecords() {
       try {
         setIsLoading(true)
-        const data = await getMyRecords()
-        setMyRecords(data.my_records)
+        const data = await getMyRecords(currentPage)
+        setMyRecords(data.rows)
+        setCurrentPage(data.pagination.page)
+        setTotalPages(data.pagination.total_pages)
       } catch (e: any) {
         const status = e.response?.status
         const errorData = e.response?.data
@@ -38,50 +43,63 @@ export default function Record() {
     }
 
     fetchMyRecords()
-  }, [])
+  }, [currentPage])
   return (
-    <Table className="boder-slate-600 mx-auto max-w-[500px] rounded-lg border-2">
-      <TableHeader className="border-slate-300 bg-slate-100 font-bold">
-        <TableRow>
-          <TableHead>活動名稱</TableHead>
-          <TableHead>日期</TableHead>
-        </TableRow>
-      </TableHeader>
-      {isLoading ? (
-        <TableBody>
+    <div>
+      <Table className="boder-slate-600 mx-auto max-w-[500px] rounded-lg border-2">
+        <TableHeader className="border-slate-300 bg-slate-100 font-bold">
           <TableRow>
-            <TableCell className="h-24 text-center text-slate-500">
-              讀取中...
-            </TableCell>
+            <TableHead>活動名稱</TableHead>
+            <TableHead>日期</TableHead>
           </TableRow>
-        </TableBody>
-      ) : myRecords.length === 0 ? (
-        <TableBody>
-          <TableRow>
-            <TableCell colSpan={2} className="h-32 text-center text-slate-500">
-              <div className="flex flex-col items-center justify-center gap-2">
-                <p>目前沒有任何參加紀錄</p>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      ) : (
-        <TableBody>
-          {myRecords.map((record, index) => {
-            return (
-              <TableRow
-                key={index}
-                className="cursor-pointer transition-colors hover:bg-slate-50"
+        </TableHeader>
+        {isLoading ? (
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={2} className="h-24 text-center text-slate-500">
+                讀取中...
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : myRecords.length === 0 ? (
+          <TableBody>
+            <TableRow>
+              <TableCell
+                colSpan={2}
+                className="h-32 text-center text-slate-500"
               >
-                <TableCell className="font-medium">
-                  {record.activity_name}
-                </TableCell>
-                <TableCell>{record.date}</TableCell>
-              </TableRow>
-            )
-          })}
-        </TableBody>
-      )}
-    </Table>
+                <div className="flex flex-col items-center justify-center gap-2">
+                  <p>目前沒有任何參加紀錄</p>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        ) : (
+          <TableBody>
+            {myRecords.map((record, index) => {
+              return (
+                <TableRow
+                  key={index}
+                  className="cursor-pointer transition-colors hover:bg-slate-50"
+                >
+                  <TableCell className="font-medium">
+                    {record.activity_name}
+                  </TableCell>
+                  <TableCell>{record.date}</TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        )}
+      </Table>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isLoading={isLoading}
+        onPageChange={(page) => {
+          setCurrentPage(page)
+        }}
+      />
+    </div>
   )
 }
