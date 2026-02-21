@@ -27,7 +27,12 @@ export interface Activity {
 }
 
 interface GetActivitiesResponseSchema {
-  activities: Activity[]
+  rows: Activity[]
+  pagination: {
+    page: number
+    page_size: number
+    total_pages: number
+  }
 }
 
 function addActivity(
@@ -36,8 +41,8 @@ function addActivity(
   return api.post('/activity', activity)
 }
 
-function getActivities(): Promise<GetActivitiesResponseSchema> {
-  return api.get('/activity')
+function getActivities(page: number): Promise<GetActivitiesResponseSchema> {
+  return api.get(`/activity/?page=${page}`)
 }
 
 function signIn(qr_code: string): Promise<signInResponseSchema> {

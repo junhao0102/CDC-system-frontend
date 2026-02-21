@@ -12,20 +12,25 @@ import {
 import { ChevronDown } from 'lucide-react'
 import AddActivity from '@/components/activity/AddActivity'
 import { getActivities, type Activity } from '@/api/activity'
+import Pagination from '@/components/Pagination'
 import { toast } from 'sonner'
 
 export default function Activity() {
   const domain = import.meta.env.VITE_DOMAIN
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
   const [activities, setActivities] = useState<Activity[]>([])
 
   useEffect(() => {
     async function fetchActivities() {
       try {
         setIsLoading(true)
-        const data = await getActivities()
-        setActivities(data.activities)
+        const data = await getActivities(currentPage)
+        setActivities(data.rows)
+        setCurrentPage(data.pagination.page)
+        setTotalPages(data.pagination.total_pages)
       } catch (e: any) {
         const status = e.response?.status
         const errorData = e.response?.data
@@ -45,7 +50,7 @@ export default function Activity() {
     }
 
     fetchActivities()
-  }, [])
+  }, [currentPage])
 
   function toggleRow(index: number) {
     setExpandedIndex(expandedIndex === index ? null : index)
@@ -138,6 +143,15 @@ export default function Activity() {
           </TableBody>
         )}
       </Table>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isLoading={isLoading}
+        onPageChange={(page) => {
+          setExpandedIndex(null)
+          setCurrentPage(page)
+        }}
+      />
     </div>
   )
 }
