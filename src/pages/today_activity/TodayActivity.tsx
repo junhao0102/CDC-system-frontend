@@ -61,9 +61,6 @@ export default function TodayActivity() {
             <p className="text-lg font-medium text-slate-600">
               今天沒有任何活動
             </p>
-            <p className="text-sm text-slate-400">
-              當前時段暫無安排，請稍後再試
-            </p>
           </CardContent>
         </Card>
       ) : (
