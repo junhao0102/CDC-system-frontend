@@ -52,57 +52,60 @@ export default function Activity() {
       <div className="flex justify-end pr-4">
         <AddActivity setActivities={setActivities} />
       </div>
-      <Table className="boder-slate-600 rounded-lg border-2">
-        <TableHeader className="border-slate-300 bg-slate-100 font-bold">
-          <TableRow>
-            <TableHead>活動名稱</TableHead>
-            <TableHead>日期</TableHead>
-            <TableHead>開始時間</TableHead>
-            <TableHead>結束時間</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        {isLoading ? (
-          <TableBody>
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <Table className="boder-slate-600 rounded-lg border-2">
+          <TableHeader className="bg-slate-100 font-bold">
             <TableRow>
-              <TableCell
-                colSpan={5}
-                className="h-24 text-center text-slate-500"
-              >
-                讀取中...
-              </TableCell>
+              <TableHead>活動名稱</TableHead>
+              <TableHead>日期</TableHead>
+              <TableHead>開始時間</TableHead>
+              <TableHead>結束時間</TableHead>
+              <TableHead></TableHead>
             </TableRow>
-          </TableBody>
-        ) : activities.length === 0 ? (
-          <TableBody>
-            <TableRow>
-              <TableCell
-                colSpan={5}
-                className="h-24 text-center text-slate-500"
-              >
-                目前沒有任何活動
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ) : (
-          <TableBody>
-            {activities.map((activity) => {
-              return (
-                <Fragment key={activity.id}>
-                  <TableRow className="transition-colors">
-                    <TableCell className="font-medium">
-                      {activity.activity_name}
-                    </TableCell>
-                    <TableCell>{activity.date}</TableCell>
-                    <TableCell>{activity.start_time}</TableCell>
-                    <TableCell>{activity.end_time}</TableCell>
-                  </TableRow>
-                </Fragment>
-              )
-            })}
-          </TableBody>
-        )}
-      </Table>
+          </TableHeader>
+          {isLoading ? (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-slate-500"
+                >
+                  讀取中...
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : activities.length === 0 ? (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="h-24 text-center text-slate-500"
+                >
+                  目前沒有任何活動
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {activities.map((activity) => {
+                return (
+                  <Fragment key={activity.id}>
+                    <TableRow className="transition-colors">
+                      <TableCell className="font-medium">
+                        {activity.activity_name}
+                      </TableCell>
+                      <TableCell>{activity.date}</TableCell>
+                      <TableCell>{activity.start_time}</TableCell>
+                      <TableCell>{activity.end_time}</TableCell>
+                    </TableRow>
+                  </Fragment>
+                )
+              })}
+            </TableBody>
+          )}
+        </Table>
+      </div>
+
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

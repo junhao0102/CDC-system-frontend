@@ -45,56 +45,55 @@ export default function Record() {
     fetchMyRecords()
   }, [currentPage])
   return (
-    <div>
-      <Table className="boder-slate-600 mx-auto max-w-[500px] rounded-lg border-2">
-        <TableHeader className="border-slate-300 bg-slate-100 font-bold">
-          <TableRow>
-            <TableHead>活動名稱</TableHead>
-            <TableHead>日期</TableHead>
-          </TableRow>
-        </TableHeader>
-        {isLoading ? (
-          <TableBody>
+    <div className="mx-auto w-full max-w-[600px] space-y-4 p-4">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <Table>
+          <TableHeader className="bg-slate-50">
             <TableRow>
-              <TableCell
-                colSpan={2}
-                className="h-24 text-center text-slate-500"
-              >
-                讀取中...
-              </TableCell>
+              <TableHead>活動名稱</TableHead>
+              <TableHead>日期</TableHead>
             </TableRow>
-          </TableBody>
-        ) : myRecords.length === 0 ? (
-          <TableBody>
-            <TableRow>
-              <TableCell
-                colSpan={2}
-                className="h-32 text-center text-slate-500"
-              >
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <p>目前沒有任何參加紀錄</p>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ) : (
-          <TableBody>
-            {myRecords.map((record, index) => {
-              return (
-                <TableRow
-                  key={index}
-                  className="cursor-pointer transition-colors hover:bg-slate-50"
+          </TableHeader>
+          {isLoading ? (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={2}
+                  className="h-24 text-center text-slate-500"
                 >
-                  <TableCell className="font-medium">
-                    {record.activity_name}
-                  </TableCell>
-                  <TableCell>{record.date}</TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        )}
-      </Table>
+                  讀取中...
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : myRecords.length === 0 ? (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={2}
+                  className="h-32 text-center text-slate-500"
+                >
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p>目前沒有任何參加紀錄</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {myRecords.map((record, index) => {
+                return (
+                  <TableRow key={index} className="transition-colors">
+                    <TableCell className="font-medium">
+                      {record.activity_name}
+                    </TableCell>
+                    <TableCell>{record.date}</TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          )}
+        </Table>
+      </div>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
