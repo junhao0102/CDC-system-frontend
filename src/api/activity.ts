@@ -39,6 +39,21 @@ interface todayActivitiesResponseSchema {
   activities: Activity[]
 }
 
+export interface Rank {
+  id: number
+  username: string
+  participates: number
+}
+
+interface GetRankResponseSchema {
+  rows: Rank[]
+  pagination: {
+    page: number
+    page_size: number
+    total_pages: number
+  }
+}
+
 function addActivity(
   activity: addActivitySchema,
 ): Promise<addActivityResponseSchema> {
@@ -57,4 +72,8 @@ function todayActivity(): Promise<todayActivitiesResponseSchema> {
   return api.get(`/activity/today_activity`)
 }
 
-export { addActivity, getActivities, signIn, todayActivity }
+function getRank(page: number): Promise<GetRankResponseSchema> {
+  return api.get(`/activity/rank/?page=${page}`)
+}
+
+export { addActivity, getActivities, signIn, todayActivity, getRank }
