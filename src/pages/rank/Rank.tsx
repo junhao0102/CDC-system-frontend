@@ -117,13 +117,13 @@ export default function Rank() {
             )}
           </TableBody>
         </Table>
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          isLoading={isLoading}
-          onPageChange={setCurrentPage}
-        />
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        isLoading={isLoading}
+        onPageChange={setCurrentPage}
+      />
     </div>
   )
 }
