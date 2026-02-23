@@ -8,6 +8,7 @@ export interface loginSchema {
 export interface User {
   username: string
   email: string
+  role: string
 }
 interface meSchema {
   user: User

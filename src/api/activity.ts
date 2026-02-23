@@ -35,6 +35,10 @@ interface GetActivitiesResponseSchema {
   }
 }
 
+interface todayActivitiesResponseSchema {
+  activities: Activity[]
+}
+
 function addActivity(
   activity: addActivitySchema,
 ): Promise<addActivityResponseSchema> {
@@ -49,4 +53,8 @@ function signIn(qr_code: string): Promise<signInResponseSchema> {
   return api.post(`/activity/sign_in/${qr_code}`)
 }
 
-export { addActivity, getActivities, signIn }
+function todayActivity(): Promise<todayActivitiesResponseSchema> {
+  return api.get(`/activity/today_activity`)
+}
+
+export { addActivity, getActivities, signIn, todayActivity }

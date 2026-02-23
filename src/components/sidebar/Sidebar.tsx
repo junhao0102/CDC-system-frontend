@@ -79,24 +79,26 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {menus.map((menu) => (
-              <SidebarMenuItem key={menu.name} className="px-2">
-                <SidebarMenuButton size="lg" asChild>
-                  <Link
-                    to={menu.url}
-                    onClick={handleCloseMobile}
-                    className="flex items-center gap-3"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center">
-                      <menu.icon className="h-5 w-5 text-slate-500" />
-                    </div>
-                    <span className="text-sm font-medium text-slate-600">
-                      {menu.name}
-                    </span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+            {menus
+              .filter((menu) => menu.roles.includes(user?.role || ''))
+              .map((menu) => (
+                <SidebarMenuItem key={menu.name} className="px-2">
+                  <SidebarMenuButton size="lg" asChild>
+                    <Link
+                      to={menu.url}
+                      onClick={handleCloseMobile}
+                      className="flex items-center gap-3"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center">
+                        <menu.icon className="h-5 w-5 text-slate-500" />
+                      </div>
+                      <span className="text-sm font-medium text-slate-600">
+                        {menu.name}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>

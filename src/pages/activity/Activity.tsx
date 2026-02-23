@@ -1,6 +1,4 @@
 import { useState, useEffect, Fragment } from 'react'
-import { cn } from '@/lib/utils'
-import { QRCodeSVG } from 'qrcode.react'
 import {
   Table,
   TableBody,
@@ -9,15 +7,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { ChevronDown } from 'lucide-react'
 import AddActivity from '@/components/activity/AddActivity'
 import { getActivities, type Activity } from '@/api/activity'
 import Pagination from '@/components/Pagination'
 import { toast } from 'sonner'
 
 export default function Activity() {
-  const domain = import.meta.env.VITE_DOMAIN
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -51,10 +46,6 @@ export default function Activity() {
 
     fetchActivities()
   }, [currentPage])
-
-  function toggleRow(index: number) {
-    setExpandedIndex(expandedIndex === index ? null : index)
-  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -95,48 +86,17 @@ export default function Activity() {
           </TableBody>
         ) : (
           <TableBody>
-            {activities.map((activity, index) => {
-              const isExpanded = expandedIndex === index
+            {activities.map((activity) => {
               return (
-                <Fragment key={index}>
-                  <TableRow
-                    className="cursor-pointer transition-colors hover:bg-slate-50"
-                    onClick={() => toggleRow(index)}
-                  >
+                <Fragment key={activity.id}>
+                  <TableRow className="transition-colors">
                     <TableCell className="font-medium">
                       {activity.activity_name}
                     </TableCell>
                     <TableCell>{activity.date}</TableCell>
                     <TableCell>{activity.start_time}</TableCell>
                     <TableCell>{activity.end_time}</TableCell>
-                    <TableCell>
-                      <ChevronDown
-                        className={cn(
-                          'inline-block h-5 w-5 transition-transform duration-200',
-                          isExpanded && 'rotate-180',
-                        )}
-                      />
-                    </TableCell>
                   </TableRow>
-
-                  {isExpanded && (
-                    <TableRow className="bg-slate-50/50 animate-in fade-in slide-in-from-top-1">
-                      <TableCell colSpan={5} className="p-6">
-                        <div className="flex flex-col items-center justify-center gap-4 py-4">
-                          <div className="rounded-xl border-2 border-slate-200 bg-white p-4 shadow-sm">
-                            <div className="flex h-32 w-32 items-center justify-center bg-slate-200 text-xs text-slate-500">
-                              <QRCodeSVG
-                                value={`${domain}/scan/${activity.qr_code}`}
-                              />
-                            </div>
-                          </div>
-                          <span className="rounded bg-slate-100 px-3 py-1 font-mono text-sm text-slate-600">
-                            {activity.qr_code}
-                          </span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
                 </Fragment>
               )
             })}
@@ -148,7 +108,6 @@ export default function Activity() {
         totalPages={totalPages}
         isLoading={isLoading}
         onPageChange={(page) => {
-          setExpandedIndex(null)
           setCurrentPage(page)
         }}
       />

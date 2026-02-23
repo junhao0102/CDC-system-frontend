@@ -56,7 +56,10 @@ export default function Record() {
         {isLoading ? (
           <TableBody>
             <TableRow>
-              <TableCell colSpan={2} className="h-24 text-center text-slate-500">
+              <TableCell
+                colSpan={2}
+                className="h-24 text-center text-slate-500"
+              >
                 讀取中...
               </TableCell>
             </TableRow>

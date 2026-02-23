@@ -6,6 +6,7 @@ import Activity from '@/pages/activity/Activity'
 import Rank from '@/pages/rank/Rank'
 import Record from '@/pages/record/Record'
 import Layout from '@/layout'
+import TodayActivity from '@/pages/today_activity/TodayActivity'
 import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
@@ -44,6 +45,14 @@ export default function App() {
           element={
             <Layout>
               <Record />
+            </Layout>
+          }
+        />
+        <Route
+          path="/today_activity"
+          element={
+            <Layout>
+              <TodayActivity />
             </Layout>
           }
         />
