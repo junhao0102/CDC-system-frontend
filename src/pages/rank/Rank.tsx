@@ -44,8 +44,9 @@ export default function Rank() {
           {topThree.map((user, idx) => {
             if (!user) return <div key={idx} className="w-24" />
 
-            const isFirst = user.id === rankData[0].id
-            const isSecond = user.id === rankData[1].id
+            const isFirst = user.id === rankData[0]?.id
+            const isSecond = user.id === rankData[1]?.id
+            const isThird = user.id === rankData[2]?.id
 
             return (
               <div key={user.id} className="group flex flex-col items-center">
@@ -56,7 +57,7 @@ export default function Rank() {
                   </p>
                 </div>
                 <div
-                  className={`relative flex w-24 flex-col items-center justify-start rounded-t-lg pt-4 transition-all ${isFirst ? 'h-40 bg-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.4)]' : ''} ${isSecond ? 'h-32 bg-slate-300' : ''} ${!isFirst && !isSecond ? 'h-24 bg-orange-300' : ''}`}
+                  className={`relative flex w-24 flex-col items-center justify-start rounded-t-lg pt-4 transition-all ${isFirst ? 'h-40 bg-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.4)]' : ''} ${isSecond ? 'h-32 bg-slate-300' : ''} ${isThird ? 'h-24 bg-orange-300' : ''}`}
                 >
                   <span className="text-2xl font-black text-white/80">
                     {isFirst ? '1' : isSecond ? '2' : '3'}
