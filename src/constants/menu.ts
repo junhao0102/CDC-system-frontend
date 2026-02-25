@@ -17,7 +17,7 @@ const menus = [
     name: '排行榜',
     url: '/rank',
     icon: Trophy,
-    roles: ['ADMIN', 'CDC_MEMBER', 'NON_CDC_MEMBER'],
+    roles: ['ADMIN'],
   },
   {
     name: '個人紀錄',

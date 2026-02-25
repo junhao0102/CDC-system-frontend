@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/card'
 
 export default function TodayActivity() {
-  const domain = import.meta.env.VITE_DOMAIN
   const [isLoading, setIsLoading] = useState(false)
   const [activities, setActivities] = useState<Activity[]>([])
 
@@ -81,7 +80,7 @@ export default function TodayActivity() {
               <CardContent className="flex flex-col items-center justify-center p-6">
                 <div className="relative rounded-xl border-4 border-slate-50 bg-white p-4 shadow-sm">
                   <QRCodeSVG
-                    value={`${domain}/scan/${activity.qr_code}`}
+                    value={`${activity.qr_code}`}
                     size={200}
                     level="H"
                   />

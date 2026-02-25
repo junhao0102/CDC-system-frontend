@@ -25,8 +25,7 @@ export default function CleanQrScanner({
         { facingMode: 'environment' },
         { fps: 10 },
         async (text) => {
-          const uuid = text.split('/').pop() || ''
-          onScan(uuid)
+          onScan(text)
 
           if (scannerRef.current?.isScanning) {
             await scannerRef.current.stop()
