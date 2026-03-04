@@ -1,4 +1,11 @@
-import { Activity, Camera, Trophy, LibraryBig, QrCode } from 'lucide-react'
+import {
+  Activity,
+  Camera,
+  Trophy,
+  LibraryBig,
+  QrCode,
+  ShieldUser,
+} from 'lucide-react'
 
 const menus = [
   {
@@ -29,6 +36,12 @@ const menus = [
     name: '今日活動',
     url: '/today_activity',
     icon: QrCode,
+    roles: ['ADMIN'],
+  },
+  {
+    name: '管理者頁面',
+    url: '/admin',
+    icon: ShieldUser,
     roles: ['ADMIN'],
   },
 ]

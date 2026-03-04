@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { Mail, Lock, User, IdCard, Loader2 } from 'lucide-react'
-import { registerUser, type UserRole } from '@/api/user'
+import { registerUser } from '@/api/user'
+import { type UserRole } from '@/constants/role'
 
 export default function Register() {
   const navigate = useNavigate()

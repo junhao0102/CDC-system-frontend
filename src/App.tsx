@@ -7,6 +7,7 @@ import Rank from '@/pages/rank/Rank'
 import Record from '@/pages/record/Record'
 import Layout from '@/layout'
 import TodayActivity from '@/pages/today_activity/TodayActivity'
+import Admin from '@/pages/admin/Admin'
 import { Toaster } from '@/components/ui/sonner'
 
 export default function App() {
@@ -53,6 +54,14 @@ export default function App() {
           element={
             <Layout>
               <TodayActivity />
+            </Layout>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <Layout>
+              <Admin />
             </Layout>
           }
         />

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useContext } from 'react'
 import { useSidebar } from '@/components/ui/sidebar'
-import { useState, useEffect } from 'react'
 import {
   Sidebar,
   SidebarContent,
@@ -13,15 +13,15 @@ import {
 } from '@/components/ui/sidebar'
 import { CircleUserRound, LogOut } from 'lucide-react'
 import menus from '@/constants/menu'
-import { me, type User, logout } from '@/api/auth.ts'
+import { logout } from '@/api/auth.ts'
 import { toast } from 'sonner'
+import { UserContext } from '@/layout'
 
 export function AppSidebar() {
   const { setOpenMobile, isMobile } = useSidebar()
 
   const navigate = useNavigate()
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user, isLoading } = useContext(UserContext)
 
   // 如果是手機版，點擊後自動關閉
   function handleCloseMobile() {
@@ -29,31 +29,6 @@ export function AppSidebar() {
       setOpenMobile(false)
     }
   }
-
-  useEffect(() => {
-    async function getMe() {
-      try {
-        const data = await me()
-        setUser(data.user)
-      } catch (e: any) {
-        const status = e.response?.status
-        const errorData = e.response?.data
-
-        if (!e.response) {
-          toast.error('伺服器無法連線，請檢查網路狀態')
-          return
-        }
-        if (status >= 500) {
-          toast.error('伺服器維護中，請稍後再試')
-          return
-        }
-        toast.error(errorData?.message || '獲取個人資訊失敗')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    getMe()
-  }, [])
 
   async function handleLogout() {
     try {
